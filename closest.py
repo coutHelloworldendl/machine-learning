@@ -29,7 +29,11 @@ def get_closest_point(n: int, G: np.ndarray, r: np.ndarray):
 def get_gaussian_matrix(n: int):
     return np.random.normal(size=(n, n))
 
-n = 2
-G = np.array([[1, 0], [0.5, 1]], dtype=np.float64)
-r = np.array([1.5, 1.5], dtype=np.float64)
-print(get_closest_point(n, G, r))
+def test():
+    n = 2
+    G = np.array([[1, 0], [0.5, 1]], dtype=np.float64)
+    r = np.array([1.5, 1.5], dtype=np.float64)
+    print(get_closest_point(n, G, r))
+
+if __name__ == '__main__':
+    test()
