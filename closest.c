@@ -6,7 +6,7 @@
  * @param n: number of dimensions 
  * @param G: generator matrix of the lattice (lower-triangular, positive diagonal elements)
  * @param r: point in n-dimensional space
- * @return: coordinates of the closest point in the lattice to r 
+ * @return: 
  */
 void get_closest_point(int n, double G[n][n], double r[n], int u_hat[n]) {
     double c = 1e18;
@@ -70,3 +70,16 @@ void get_closest_point(int n, double G[n][n], double r[n], int u_hat[n]) {
         }
     }
 } 
+
+void test() {
+    double G[2][2] = {{1, 0}, {0.5, 1}};
+    double r[2] = {1.5, 1.5};
+    int u[2];
+    get_closest_point(2, G, r, u);
+    printf("Closest point: (%d, %d)\n", u[0], u[1]);
+}
+
+int main() {
+    test();
+    return 0;
+}
