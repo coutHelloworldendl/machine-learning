@@ -1,5 +1,6 @@
 import argparse
 import numpy as np
+from closest import get_closest_point as CLP
 
 args = argparse.ArgumentParser()
 args.add_argument('--n'        , type = int   , default = 4       )
@@ -10,18 +11,19 @@ args.add_argument('--nu'       , type = float , default = 200     )
 args.add_argument('--mod'      , type = int   , default = 100     )
 args = args.parse_args()
 
+# sample from a normal distribution
 def GRAN(array):
-    pass
+    return np.random.normal(size = array)
 
+# sample from a uniform distribution
 def URAN(array):
-    pass
+    return np.random.uniform(low = 0, high = 1, size = array)
 
+# reduce the basis of a lattice
 def RED(matrix):
     pass
 
-def CLP(lattice, vector):
-    pass
-
+# construct a lattice
 def construct_lattice(n):
     matrix = GRAN([n, n])
     matrix = RED(matrix)
@@ -48,6 +50,7 @@ def construct_lattice(n):
             matrix = matrix * pow(v, -1/n)
     return True, matrix
 
+# test the result lattice
 def NSM(matrix, n):
     pass
 
