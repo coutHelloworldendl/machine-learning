@@ -1,14 +1,15 @@
 import argparse
 import numpy as np
-from closest import get_closest_point as CLP
+from utils.closest import get_closest_point as CLP
 
 args = argparse.ArgumentParser()
-args.add_argument('--n'        , type = int   , default = 4       )
-args.add_argument('--epoch'    , type = int   , default = 1000000 )
-args.add_argument('--try_time' , type = int   , default = 100     )
-args.add_argument('--mu_0'     , type = float , default = 0.005   )
-args.add_argument('--nu'       , type = float , default = 200     )
-args.add_argument('--mod'      , type = int   , default = 100     )
+args.add_argument('--n'        , type = int   , default = 4        )
+args.add_argument('--epoch'    , type = int   , default = 1000000  )
+args.add_argument('--try_time' , type = int   , default = 100      )
+args.add_argument('--mu_0'     , type = float , default = 0.005    )
+args.add_argument('--nu'       , type = float , default = 200      )
+args.add_argument('--mod'      , type = int   , default = 100      )
+args.add_argument('--log'      , type = str   , default = '/log'   )
 args = args.parse_args()
 
 # sample from a normal distribution
@@ -23,8 +24,12 @@ def URAN(array):
 def RED(matrix):
     pass
 
+# test the result lattice
+def NSM(matrix, n):
+    pass
+
 # construct a lattice
-def construct_lattice(n):
+def construct_lattice(n, f):
     matrix = GRAN([n, n])
     matrix = RED(matrix)
     matrix = np.linalg.cholesky(matrix)
@@ -48,19 +53,18 @@ def construct_lattice(n):
             matrix = np.linalg.cholesky(RED(matrix))
             v = np.prod([matrix[i][i] for i in range(n)])
             matrix = matrix * pow(v, -1/n)
+        result = NSM(matrix, n)
+        f.write('Epoch:{}, Loss:{}\n'.format(t, result))
     return True, matrix
 
-# test the result lattice
-def NSM(matrix, n):
-    pass
-
 if __name__ == '__main__':
-    for i in range(args.try_time):
-        status, matrix = construct_lattice(args.n)
-        if status:
-            print('Lattice:{}\n, try_time:{}'.format(matrix, i))
-            break
-        if i == args.try_time - 1:
-            print('Fail to construct a lattice after {} times'.format(args.try_time))
-            exit(0)
-    print('Loss:{}'.format(NSM(matrix, args.n)))
+    with open(args.log, 'w') as f:
+        for i in range(args.try_time):
+            status, matrix = construct_lattice(args.n, f)
+            if status:
+                print('Lattice:{}\n, try_time:{}'.format(matrix, i))
+                break
+            if i == args.try_time - 1:
+                print('Fail to construct a lattice after {} times'.format(args.try_time))
+                exit(0)
+        print('Loss:{}'.format(NSM(matrix, args.n)))
