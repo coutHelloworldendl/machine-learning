@@ -1,5 +1,6 @@
 import argparse
 import numpy as np
+import matplotlib.pyplot as plt
 from utils.closest import get_closest_point as CLP
 
 args = argparse.ArgumentParser()
@@ -68,3 +69,6 @@ if __name__ == '__main__':
                 print('Fail to construct a lattice after {} times'.format(args.try_time))
                 exit(0)
         print('Loss:{}'.format(NSM(matrix, args.n)))
+    plt.matshow(matrix)
+    plt.colorbar()
+    plt.savefig('lattice.png')    
