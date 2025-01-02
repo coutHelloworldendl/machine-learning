@@ -1,3 +1,9 @@
+'''
+This file contains all the arguments.
+Please include all the arguments here.
+Use 'from utils.args import args' to import the arguments.
+'''
+
 import argparse
 
 args = argparse.ArgumentParser()

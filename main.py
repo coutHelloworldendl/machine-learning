@@ -13,9 +13,16 @@ from utils.args import args
 
 # construct a lattice
 def construct_lattice(n, f):
-    matrix = GRAN([n, n])
+    # generate a random matrix
+    matrix = GRAN([n, n]) 
+    
+    # reduce the matrix using LLL algorithm
     matrix = RED(matrix, n=n, delta=args.delta)
+    
+    # orthogonalize the matrix
     matrix = ORTH(matrix)
+    
+    # normalize the matrix
     v = np.prod([matrix[i][i] for i in range(n)])
     matrix = matrix * pow(v, -1.0/n)
     
@@ -29,8 +36,8 @@ def construct_lattice(n, f):
         for i in range(n):
             for j in range(i):
                 matrix[i][j] -= mu * y[i] * e[j]
-            matrix[i][i] -= mu * (y[i] * e[i] - e_2norm / (n * matrix[i][i]))
-        result = SC(matrix, n)
+            matrix[i][i] -= mu * (y[i] * e[i] - e_2norm / (n * matrix[i][i])) # gradient descent
+        result = SC(matrix, n) # sanity check
         if not result:
             f.write('Fail to construct a lattice\n')
             return False, None
@@ -44,19 +51,35 @@ def construct_lattice(n, f):
     return True, matrix
 
 if __name__ == '__main__':
-    os.makedirs(os.path.dirname(args.log), exist_ok = True)
-    log_path = args.log + '/log.txt'
+    
+    # create log file path
     if not os.path.exists(args.log):
         os.makedirs(args.log)
+    
+    # create log file
+    log_path = args.log + '/log-dim-' + str(args.n) + '.txt'
+    result_path = args.log + '/result-dim-' + str(args.n) + '.txt'
+    graph_path = args.log + '/graph-dim-' + str(args.n) + '.png'
+        
+    # construct a lattice
     with open(log_path, 'w') as f:
         for i in range(args.try_time):
+            
+            # try to construct a lattice
             status, matrix = construct_lattice(args.n, f)
+            
+            # if success to construct a lattice, break the loop
             if status:
-                print('Lattice:{}\n, try_time:{}'.format(matrix, i))
                 break
+            
+            # if fail to construct a lattice, try again, up to args.try_time times
             if i == args.try_time - 1:
                 print('Fail to construct a lattice after {} times'.format(args.try_time))
                 exit(0)
+    
+    # save and visualize the lattice
+    with open(result_path, 'w') as f:
+        f.write('Lattice = {}\n'.format(matrix))
     plt.matshow(matrix)
     plt.colorbar()
-    plt.savefig('lattice.png')
+    plt.savefig(graph_path)

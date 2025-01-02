@@ -15,6 +15,7 @@ def sanity_check(matrix, n):
     else:
         return True
     
+# cholosky decomposition
 def orthogonalize(matrix):
     matrix = matrix @ matrix.T
     matrix = np.linalg.cholesky(matrix)
