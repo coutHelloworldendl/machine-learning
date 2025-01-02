@@ -38,7 +38,8 @@ def construct_lattice(n, f):
             matrix = matrix @ matrix.T
             v = np.prod([matrix[i][i] for i in range(n)])
             matrix = matrix * pow(v, -1/n)
-        f.write('Epoch {}: matrix = {}\n'.format(t, matrix))
+        if (t+1) % 10000 == 0:
+            f.write('Epoch {}: matrix = {}\n'.format(t+1, matrix))
     return True, matrix
 
 if __name__ == '__main__':
