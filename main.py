@@ -70,7 +70,7 @@ if __name__ == '__main__':
             
             # if success to construct a lattice, break the loop
             if status:
-                print('Lattice:\n {}\n try_time:{}'.format(matrix, i))
+                print('Lattice:\n {}\nTry_time:{}'.format(matrix, i))
                 break
             
             # if fail to construct a lattice, try again, up to args.try_time times
