@@ -45,6 +45,8 @@ def construct_lattice(n, f):
 if __name__ == '__main__':
     os.makedirs(os.path.dirname(args.log), exist_ok = True)
     log_path = args.log + '/log.txt'
+    if not os.path.exists(args.log):
+        os.makedirs(args.log)
     with open(log_path, 'w') as f:
         for i in range(args.try_time):
             status, matrix = construct_lattice(args.n, f)
