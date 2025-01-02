@@ -79,50 +79,72 @@ void update_mu(double** mu, double** b, double** b_star, int n) {
 }
 
 void schmidt(double** b, double** b_star, int n){
-    for(int i = 0 ; i < n ; i ++){
+    for (int i = 0; i < n; i++) {
         memset(b_star[i], 0, n * sizeof(double));
     }
-    for(int i = 0; i < n; i++){
+    for (int i = 0; i < n; i++) {
         copy(b_star[i], b[i], n);
-        for(int j = 0; j < i; j++){
+        for (int j = 0; j < i; j++) {
             double scalar = inner_product(b[i], b_star[j], n) / inner_product(b_star[j], b_star[j], n);
             scalar_multiply(b_star[i], b_star[j], scalar, n);
         }
     }
 }
 
-void lll_algorithm(double** b, int n, double delta) {
+void lll_algorithm_inner(double** b, int n, double delta) {
     double** b_star = malloc_2d(n);
     double** mu = malloc_2d(n);
+
     schmidt(b, b_star, n);
     update_mu(mu, b, b_star, n);
-    for(int k = 1; k < n;){
-        for(int j = k - 1; j >= 0; j --){
-            if(fabs(mu[k][j]) > 0.5){
-                for(int i = 0; i < n; i++){
+
+    for (int k = 1; k < n; ) {
+        for (int j = k - 1; j >= 0; j--) {
+            if (fabs(mu[k][j]) > 0.5) {
+                for (int i = 0; i < n; i++) {
                     b[k][i] -= round(mu[k][j]) * b[j][i];
                 }
                 schmidt(b, b_star, n);
                 update_mu(mu, b, b_star, n);
             }
         }
-        if(inner_product(b_star[k], b_star[k], n) >= (delta - mu[k][k - 1] * mu[k][k - 1]) * inner_product(b_star[k - 1], b_star[k - 1], n)){
-            k ++;
-        }
-        else{
+        if (inner_product(b_star[k], b_star[k], n) >= 
+            (delta - mu[k][k - 1] * mu[k][k - 1]) * inner_product(b_star[k - 1], b_star[k - 1], n)) {
+            k++;
+        } else {
             swap(b[k], b[k - 1], n);
             schmidt(b, b_star, n);
             update_mu(mu, b, b_star, n);
             k = fmax(k - 1, 1);
         }
     }
-    
+
+    free_2d(b_star, n);
+    free_2d(mu, n);
+}
+
+void lll_algorithm(int n, double b[n][n], double delta) {
+    double** b_ = malloc_2d(n);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            b_[i][j] = b[i][j];
+        }
+    }
+
+    lll_algorithm_inner(b_, n, delta);
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            b[i][j] = b_[i][j];
+        }
+    }
+    free_2d(b_, n);
 }
 
 int compare_matrix(double** a, double** b, int n){
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            if(a[i][j] != b[i][j]){
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (a[i][j] != b[i][j]) {
                 return 0;
             }
         }
@@ -150,7 +172,7 @@ int main(){
     solution2[0][0] = 0, solution2[0][1] = 1, solution2[0][2] = 0;
     solution2[1][0] = 1, solution2[1][1] = 0, solution2[1][2] = 1;
     solution2[2][0] = -1, solution2[2][1] = 0, solution2[2][2] = 2;
-    lll_algorithm(problem2, 3, 0.75);
+    lll_algorithm_inner(problem2, 3, 0.75);
     print_matrix(problem2, 3);
     print_matrix(solution2, 3);
 }

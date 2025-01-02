@@ -2,11 +2,11 @@ import ctypes
 import numpy as np
 
 lib = ctypes.CDLL('./lll.so')
-lib.lll_algorithm.argtypes = [ctypes.POINTER(ctypes.POINTER(ctypes.c_double)), ctypes.c_int, ctypes.c_double]
+lib.lll_algorithm.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.POINTER(ctypes.c_double)), ctypes.c_double]
 
 def lll_algorithm(G: np.ndarray, n: int, delta: float):
     G_ptr = G.ctypes.data_as(ctypes.POINTER(ctypes.POINTER(ctypes.c_double)))
-    lib.lll_algorithm(G_ptr, n, delta) 
+    lib.lll_algorithm(n, G_ptr, delta) 
     return G
 
 def test():
