@@ -1,9 +1,11 @@
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 from utils.funcs import gaussian_random as GRAN
 from utils.funcs import uniform_random as URAN
 from utils.funcs import NSM as NSM
+from utils.funcs import sanity_check as SC
 from utils.closest_algo import get_closest_point as CLP
 from utils.lll_algo import lll_algorithm as RED
 from utils.args import args
@@ -11,12 +13,11 @@ from utils.args import args
 # construct a lattice
 def construct_lattice(n, f):
     matrix = GRAN([n, n])
-    matrix = RED(matrix)
+    print('Initial lattice:', matrix)
+    matrix = RED(matrix, n=n, delta=args.delta)
+    print('LLL lattice:', matrix)
+    print('Eigenvalues:', np.linalg.eig(matrix)[0])
     matrix = np.linalg.cholesky(matrix)
-    
-    # sanity check
-    if np.min([matrix[i][i] for i in range(n)]) <= 0:
-        return False, matrix
     v = np.prod([matrix[i][i] for i in range(n)])
     matrix = matrix * pow(v, -1/n)
     
@@ -31,15 +32,21 @@ def construct_lattice(n, f):
             for j in range(i):
                 matrix[i][j] -= mu * y[i] * e[j]
             matrix[i][i] -= mu * (y[i] * e[i] - e_2norm / (n * matrix[i][i]))
+        result = SC(matrix, n)
+        if not result:
+            f.write('Fail to construct a lattice\n')
+            return False, None
         if t % args.mod == args.mod - 1:
-            matrix = np.linalg.cholesky(RED(matrix))
+            matrix = np.linalg.cholesky(RED(matrix, n=n, delta=args.delta))
             v = np.prod([matrix[i][i] for i in range(n)])
             matrix = matrix * pow(v, -1/n)
         f.write('Epoch {}: matrix = {}\n'.format(t, matrix))
     return True, matrix
 
 if __name__ == '__main__':
-    with open(args.log, 'w') as f:
+    os.makedirs(os.path.dirname(args.log), exist_ok = True)
+    log_path = args.log + '/log.txt'
+    with open(log_path, 'w') as f:
         for i in range(args.try_time):
             status, matrix = construct_lattice(args.n, f)
             if status:

@@ -1,7 +1,7 @@
 import ctypes
 import numpy as np
 
-lib = ctypes.CDLL('./lll.so')
+lib = ctypes.CDLL('./utils/lll.so')
 lib.lll_algorithm.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.POINTER(ctypes.c_double)), ctypes.c_double]
 
 def lll_algorithm(G: np.ndarray, n: int, delta: float):

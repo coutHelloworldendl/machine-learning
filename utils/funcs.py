@@ -8,6 +8,13 @@ def gaussian_random(array):
 def uniform_random(array):
     return np.random.uniform(low = 0, high = 1, size = array)
 
+# sanity check
+def sanity_check(matrix, n):
+    if np.min([matrix[i][i] for i in range(n)]) <= 0:
+        return False
+    else:
+        return True
+
 # test the result lattice
 def NSM(matrix, n):
 
