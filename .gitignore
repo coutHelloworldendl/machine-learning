@@ -1,3 +1,5 @@
 .vscode/
-lattice.png
 log/
+__pycache__/
+lattice.png
+local_test.py
