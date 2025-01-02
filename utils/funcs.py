@@ -14,6 +14,11 @@ def sanity_check(matrix, n):
         return False
     else:
         return True
+    
+def orthogonalize(matrix):
+    matrix = matrix @ matrix.T
+    matrix = np.linalg.cholesky(matrix)
+    return matrix
 
 # test the result lattice
 def NSM(matrix, n):

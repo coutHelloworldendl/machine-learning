@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 from utils.funcs import gaussian_random as GRAN
 from utils.funcs import uniform_random as URAN
+from utils.funcs import orthogonalize as ORTH
 from utils.funcs import NSM as NSM
 from utils.funcs import sanity_check as SC
 from utils.closest_algo import get_closest_point as CLP
@@ -14,9 +15,9 @@ from utils.args import args
 def construct_lattice(n, f):
     matrix = GRAN([n, n])
     matrix = RED(matrix, n=n, delta=args.delta)
-    matrix = matrix @ matrix.T
+    matrix = ORTH(matrix)
     v = np.prod([matrix[i][i] for i in range(n)])
-    matrix = matrix * pow(v, -1/n)
+    matrix = matrix * pow(v, -1.0/n)
     
     # main loop
     for t in tqdm(range(args.epoch), desc = 'Constructing lattice'):
@@ -35,7 +36,7 @@ def construct_lattice(n, f):
             return False, None
         if t % args.mod == args.mod - 1:
             matrix = RED(matrix, n=n, delta=args.delta)
-            matrix = matrix @ matrix.T
+            matrix = ORTH(matrix)
             v = np.prod([matrix[i][i] for i in range(n)])
             matrix = matrix * pow(v, -1/n)
         if (t+1) % 10000 == 0:
@@ -58,4 +59,4 @@ if __name__ == '__main__':
                 exit(0)
     plt.matshow(matrix)
     plt.colorbar()
-    plt.savefig('lattice.png') 
+    plt.savefig('lattice.png')
