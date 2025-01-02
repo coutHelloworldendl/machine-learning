@@ -52,7 +52,7 @@ if __name__ == '__main__':
         for i in range(args.try_time):
             status, matrix = construct_lattice(args.n, f)
             if status:
-                print('Lattice:{}\n, try_time:{}'.format(matrix, i))
+                print('Lattice:\n {}\n try_time:{}'.format(matrix, i))
                 break
             if i == args.try_time - 1:
                 print('Fail to construct a lattice after {} times'.format(args.try_time))
