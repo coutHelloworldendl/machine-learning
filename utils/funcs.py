@@ -1,5 +1,4 @@
 import numpy as np
-from args import args
 
 # sample from a normal distribution
 def gaussian_random(array):

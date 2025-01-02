@@ -1,12 +1,11 @@
-import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-from utils.closest import get_closest_point as CLP
-from utils.lll import lll_algorithm as RED
 from utils.funcs import gaussian_random as GRAN
 from utils.funcs import uniform_random as URAN
 from utils.funcs import NSM as NSM
+from utils.closest import get_closest_point as CLP
+from utils.lll import lll_algorithm as RED
 from utils.args import args
 
 # construct a lattice
