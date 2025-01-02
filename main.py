@@ -4,28 +4,10 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 from utils.closest import get_closest_point as CLP
 from utils.lll import lll_algorithm as RED
-
-args = argparse.ArgumentParser()
-args.add_argument('--n'        , type = int   , default = 4        )
-args.add_argument('--epoch'    , type = int   , default = 1000000  )
-args.add_argument('--try_time' , type = int   , default = 100      )
-args.add_argument('--mu_0'     , type = float , default = 0.005    )
-args.add_argument('--nu'       , type = float , default = 200      )
-args.add_argument('--mod'      , type = int   , default = 100      )
-args.add_argument('--log'      , type = str   , default = '/log'   )
-args = args.parse_args()
-
-# sample from a normal distribution
-def GRAN(array):
-    return np.random.normal(size = array)
-
-# sample from a uniform distribution
-def URAN(array):
-    return np.random.uniform(low = 0, high = 1, size = array)
-
-# test the result lattice
-def NSM(matrix, n):
-    pass
+from utils.funcs import gaussian_random as GRAN
+from utils.funcs import uniform_random as URAN
+from utils.funcs import NSM as NSM
+from utils.args import args
 
 # construct a lattice
 def construct_lattice(n, f):
@@ -70,7 +52,7 @@ if __name__ == '__main__':
             if i == args.try_time - 1:
                 print('Fail to construct a lattice after {} times'.format(args.try_time))
                 exit(0)
-        print('Loss:{}'.format(NSM(matrix, args.n)))
+        #print('Loss:{}'.format(NSM(matrix, args.n)))
     plt.matshow(matrix)
     plt.colorbar()
     plt.savefig('lattice.png')    
