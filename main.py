@@ -35,7 +35,7 @@ def construct_lattice(n, f):
             matrix = np.linalg.cholesky(RED(matrix))
             v = np.prod([matrix[i][i] for i in range(n)])
             matrix = matrix * pow(v, -1/n)
-        f.write('Epoch:{}\n'.format(t))
+        f.write('Epoch {}: matrix = {}\n'.format(t, matrix))
     return True, matrix
 
 if __name__ == '__main__':
@@ -50,4 +50,4 @@ if __name__ == '__main__':
                 exit(0)
     plt.matshow(matrix)
     plt.colorbar()
-    plt.savefig('lattice.png')    
+    plt.savefig('lattice.png')
