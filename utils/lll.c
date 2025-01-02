@@ -4,8 +4,7 @@
 #include <assert.h>
 #include <string.h>
 
-void print_matrix(char name[], double** a, int n) {
-    printf("%s:\n", name);
+void print_matrix(double** a, int n) {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             printf("%.32f ", a[i][j]);
@@ -17,7 +16,7 @@ void print_matrix(char name[], double** a, int n) {
 double** malloc_2d(int n) {
     double** p = (double**)malloc(n * sizeof(double*));
     for (int i = 0; i < n; i++) {
-        p[i] = malloc(n * sizeof(double));
+        p[i] = (double*)malloc(n * sizeof(double));
     }
     return p;
 }
@@ -140,8 +139,8 @@ int main(){
     solution1[1][0] = -0.4, solution1[1][1] = 1.2;
     double** b = malloc_2d(2);
     schmidt(problem1, b, 2);
-    print_matrix("b", b, 2);
-    print_matrix("solution1", solution1, 2);
+    print_matrix(b, 2);
+    print_matrix(solution1, 2);
 
     double** problem2 = malloc_2d(3);
     problem2[0][0] = 1, problem2[0][1] = 1, problem2[0][2] = 1;
@@ -152,6 +151,6 @@ int main(){
     solution2[1][0] = 1, solution2[1][1] = 0, solution2[1][2] = 1;
     solution2[2][0] = -1, solution2[2][1] = 0, solution2[2][2] = 2;
     lll_algorithm(problem2, 3, 0.75);
-    print_matrix("problem2", problem2, 3);
-    print_matrix("solution2", solution2, 3);
+    print_matrix(problem2, 3);
+    print_matrix(solution2, 3);
 }

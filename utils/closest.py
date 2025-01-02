@@ -2,7 +2,7 @@ import ctypes
 import numpy as np
 
 lib = ctypes.CDLL('./closest.so')
-lib.get_closest_point.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.POINTER(ctypes.c_double)), ctypes.POINTER(ctypes.c_double)]
+lib.get_closest_point.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.POINTER(ctypes.c_double)), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_int)]
 
 ###
 # n: number of dimensions 
