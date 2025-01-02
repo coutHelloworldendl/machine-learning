@@ -57,4 +57,4 @@ if __name__ == '__main__':
                 exit(0)
     plt.matshow(matrix)
     plt.colorbar()
-    plt.savefig('lattice.png')
+    plt.savefig('lattice.png') 
