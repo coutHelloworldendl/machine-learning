@@ -8,6 +8,7 @@
  * @param r: point in n-dimensional space
  * @return: 
  */
+
 void get_closest_point(int n, double G[n][n], double r[n], int u_hat[n]) {
     double c = 1e18;
     double eps = 1e-7;

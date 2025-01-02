@@ -26,9 +26,7 @@ def construct_lattice(n, f):
         z = URAN([n])
         y = z - CLP(matrix, z @ matrix)
         e = y @ matrix
-        print(e)
         e_2norm = np.linalg.norm(e) ** 2 # squared 2-norm
-        print(e_2norm)
         for i in range(n):
             for j in range(i):
                 matrix[i][j] -= mu * y[i] * e[j]
@@ -37,8 +35,7 @@ def construct_lattice(n, f):
             matrix = np.linalg.cholesky(RED(matrix))
             v = np.prod([matrix[i][i] for i in range(n)])
             matrix = matrix * pow(v, -1/n)
-        result = NSM(matrix, n)
-        f.write('Epoch:{}, Loss:{}\n'.format(t, result))
+        f.write('Epoch:{}\n'.format(t))
     return True, matrix
 
 if __name__ == '__main__':
@@ -51,7 +48,6 @@ if __name__ == '__main__':
             if i == args.try_time - 1:
                 print('Fail to construct a lattice after {} times'.format(args.try_time))
                 exit(0)
-        #print('Loss:{}'.format(NSM(matrix, args.n)))
     plt.matshow(matrix)
     plt.colorbar()
     plt.savefig('lattice.png')    
