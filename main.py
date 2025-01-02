@@ -80,7 +80,7 @@ if __name__ == '__main__':
     
     # save and visualize the lattice
     with open(result_path, 'w') as f:
-        f.write('Lattice = {}\n'.format(matrix))
+        f.write('Lattice =\n{}\n'.format(matrix))
     plt.matshow(matrix)
     plt.colorbar()
     plt.savefig(graph_path)
