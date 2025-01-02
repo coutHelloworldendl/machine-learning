@@ -1,7 +1,9 @@
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 from utils.closest import get_closest_point as CLP
+from utils.lll import lll_algorithm as RED
 
 args = argparse.ArgumentParser()
 args.add_argument('--n'        , type = int   , default = 4        )
@@ -21,10 +23,6 @@ def GRAN(array):
 def URAN(array):
     return np.random.uniform(low = 0, high = 1, size = array)
 
-# reduce the basis of a lattice
-def RED(matrix):
-    pass
-
 # test the result lattice
 def NSM(matrix, n):
     pass
@@ -34,11 +32,15 @@ def construct_lattice(n, f):
     matrix = GRAN([n, n])
     matrix = RED(matrix)
     matrix = np.linalg.cholesky(matrix)
-    if np.min([matrix[i][i] for i in range(n)]) <= 0: # sanity check
+    
+    # sanity check
+    if np.min([matrix[i][i] for i in range(n)]) <= 0:
         return False, matrix
     v = np.prod([matrix[i][i] for i in range(n)])
     matrix = matrix * pow(v, -1/n)
-    for t in range(args.epoch):
+    
+    # main loop
+    for t in tqdm(range(args.epoch), desc = 'Constructing lattice'):
         mu = args.mu_0 * pow(args.nu, -t/(args.epoch - 1))
         z = URAN([n])
         y = z - CLP(matrix, z @ matrix)
