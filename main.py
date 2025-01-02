@@ -13,11 +13,8 @@ from utils.args import args
 # construct a lattice
 def construct_lattice(n, f):
     matrix = GRAN([n, n])
-    print('Initial lattice:', matrix)
     matrix = RED(matrix, n=n, delta=args.delta)
-    print('LLL lattice:', matrix)
-    print('Eigenvalues:', np.linalg.eig(matrix)[0])
-    matrix = np.linalg.cholesky(matrix)
+    matrix = matrix @ matrix.T
     v = np.prod([matrix[i][i] for i in range(n)])
     matrix = matrix * pow(v, -1/n)
     
@@ -25,7 +22,7 @@ def construct_lattice(n, f):
     for t in tqdm(range(args.epoch), desc = 'Constructing lattice'):
         mu = args.mu_0 * pow(args.nu, -t/(args.epoch - 1))
         z = URAN([n])
-        y = z - CLP(matrix, z @ matrix)
+        y = z - CLP(n, matrix, z @ matrix)
         e = y @ matrix
         e_2norm = np.linalg.norm(e) ** 2 # squared 2-norm
         for i in range(n):
@@ -37,7 +34,8 @@ def construct_lattice(n, f):
             f.write('Fail to construct a lattice\n')
             return False, None
         if t % args.mod == args.mod - 1:
-            matrix = np.linalg.cholesky(RED(matrix, n=n, delta=args.delta))
+            matrix = RED(matrix, n=n, delta=args.delta)
+            matrix = matrix @ matrix.T
             v = np.prod([matrix[i][i] for i in range(n)])
             matrix = matrix * pow(v, -1/n)
         f.write('Epoch {}: matrix = {}\n'.format(t, matrix))
