@@ -68,6 +68,9 @@ if __name__ == '__main__':
         
     # construct a lattice
     with open(log_path, 'w') as f:
+        # training args
+        f.write('args = {}\n'.format(args))
+        
         for i in range(args.try_time):
             
             # try to construct a lattice
@@ -87,7 +90,7 @@ if __name__ == '__main__':
     
     # save and visualize the lattice
     with open(result_path, 'w') as f:
-        f.write('Lattice =\n{}\n'.format(matrix))
+        f.write('Lattice =\n{},\nNSM =\n{}'.format(matrix, array[-1]))
         
     # visualize the matrix
     plt.matshow(matrix)
