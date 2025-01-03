@@ -1,6 +1,6 @@
 import numpy as np
-from .closest_algo import get_closest_point as CLP
-from .args import args
+from closest_algo import get_closest_point as CLP
+from args import args
 
 # sample from a normal distribution
 def gaussian_random(array):
@@ -37,9 +37,14 @@ def NSM(matrix, n):
     return np.prod(np.diagonal(matrix)) ** (-2.0 / n) * length_sum / (args.sample * n)
 
 if __name__ == '__main__':
+    '''
     for n in range(2, 30):
         array = []
         for _ in range(100):
             matrix = np.array(np.eye(n), dtype = np.float64)
             array.append(NSM(matrix, n))
         print('n = {}, mean = {}, variance = {}'.format(n, np.mean(array), np.var(array)))
+    '''
+    matrix = np.array([[1, 0, 0], [0.3639316864866463663, 1.028057868749959747, 0], [-0.3643806993546727102, 0.5134608145305991078, 0.8911988783086500776]], dtype = np.float64)
+    print(NSM(matrix, 3))
+    
