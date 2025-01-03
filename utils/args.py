@@ -17,6 +17,7 @@ parser.add_argument('--nu'         , type = float , default = 200         ) # de
 parser.add_argument('--mod'        , type = int   , default = 100         ) # number of iterations between two consecutive lattice reduction
 parser.add_argument('--log'        , type = str   , default = './log'     ) # log file
 args = parser.parse_args()
-parser.add_argument('--sample'     , type = int   , default = int(1000000 / args.n)     ) # number of samples per dimension
+assert args.n > 0
+parser.add_argument('--sample'     , type = int   , default = 1000000 // args.n     ) # number of samples per dimension
 parser.add_argument('--dbg_epoch'  , type = int   , default = int(args.epoch / args.dbg_times) ) # number of iterations between two consecutive debug information
 args = parser.parse_args()
