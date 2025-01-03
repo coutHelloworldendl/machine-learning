@@ -13,6 +13,9 @@ from utils.args import args
 
 # construct a lattice
 def construct_lattice(n, f):
+    # record NSM
+    NSM_array = []
+    
     # generate a random matrix
     matrix = GRAN([n, n]) 
     
@@ -40,18 +43,19 @@ def construct_lattice(n, f):
         result = SC(matrix, n) # sanity check
         if not result:
             f.write('Fail to construct a lattice\n')
-            return False, None
+            return False, None, None
         if t % args.mod == args.mod - 1:
             matrix = RED(matrix, n=n, delta=args.delta)
             matrix = ORTH(matrix)
             v = np.prod([matrix[i][i] for i in range(n)])
             matrix = matrix * pow(v, -1/n)
         if (t + 1) % args.dbg_epoch == 0:
-            f.write('Epoch {}: matrix = \n{}\n'.format(t + 1, matrix))
-    return True, matrix
+            nsm = NSM(matrix, n)
+            f.write('Epoch = {}, NSM = {}, matrix =\n{}\n'.format(t + 1, nsm, matrix))
+            NSM_array.append(nsm)
+    return True, matrix, NSM_array
 
 if __name__ == '__main__':
-    
     # create log file path
     if not os.path.exists(args.log):
         os.makedirs(args.log)
@@ -60,13 +64,14 @@ if __name__ == '__main__':
     log_path = args.log + '/log-dim-' + str(args.n) + '.txt'
     result_path = args.log + '/result-dim-' + str(args.n) + '.txt'
     graph_path = args.log + '/graph-dim-' + str(args.n) + '.png'
+    curve_path = args.log + '/curve-dim-' + str(args.n) + '.png'
         
     # construct a lattice
     with open(log_path, 'w') as f:
         for i in range(args.try_time):
             
             # try to construct a lattice
-            status, matrix = construct_lattice(args.n, f)
+            status, matrix, array = construct_lattice(args.n, f)
             for i in range(args.n):
                 matrix[i] /= np.linalg.norm(matrix[i])
             
@@ -83,6 +88,14 @@ if __name__ == '__main__':
     # save and visualize the lattice
     with open(result_path, 'w') as f:
         f.write('Lattice =\n{}\n'.format(matrix))
+        
+    # visualize the matrix
     plt.matshow(matrix)
     plt.colorbar()
     plt.savefig(graph_path)
+    
+    # visualize the curve
+    x = [i for i in range(1, args.epoch + 1, args.dbg_epoch)]
+    plt.clf()
+    plt.plot(x, array)
+    plt.savefig(curve_path)
