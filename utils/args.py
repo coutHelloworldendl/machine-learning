@@ -5,6 +5,7 @@ Use 'from utils.args import args' to import the arguments.
 '''
 
 import argparse
+import math
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--n'          , type = int   , default = 3           ) # lattice dimension
@@ -16,7 +17,7 @@ parser.add_argument('--delta'      , type = float , default = 0.75        ) # LL
 parser.add_argument('--nu'         , type = float , default = 200         ) # decay rate
 parser.add_argument('--mod'        , type = int   , default = 100         ) # number of iterations between two consecutive lattice reduction
 parser.add_argument('--log'        , type = str   , default = './log'     ) # log file
-parser.add_argument('--sample_time', type = int   , default = 10          ) # number of samples
 args = parser.parse_args()
 parser.add_argument('--dbg_epoch', type = int   , default = args.epoch / args.dbg_times ) # number of iterations between two consecutive debug information
+parser.add_argument('--sample_time', type = int   , default = int(math.log2(1000000) / math.log2(args.n)) ) # number of samples per dimension
 args = parser.parse_args()
