@@ -38,5 +38,5 @@ def NSM(matrix, n):
     length_sum = np.sum(row_length_square)
     volume=1
     for i in range(n):
-        volume*=matrix[i][i]
-    return volume**(-2/n)*length_sum/random_point_num
+        volume *= matrix[i][i]
+    return volume ** (-2/n)*length_sum/random_point_num
