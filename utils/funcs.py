@@ -54,10 +54,11 @@ if __name__ == '__main__':
                        [0, 2, 0],
                        [0, 0, 2]], dtype=np.float64)
     print("NSM = {} , std = {}".format(NSM(matrix, 3), 1.0 / 12))
+    '''
     for n in range(2, 30):
         array = []
         for _ in range(100):
             matrix = np.array(np.eye(n), dtype = np.float64)
             array.append(NSM(matrix, n))
         print('n = {}, mean = {}, variance = {}'.format(n, np.mean(array), np.var(array)))
-    
+    '''
