@@ -75,8 +75,10 @@ if __name__ == '__main__':
             
             # try to construct a lattice
             status, matrix, array = construct_lattice(args.n, f)
-            for i in range(args.n):
-                matrix[i] /= np.linalg.norm(matrix[i])
+            
+            # normalize the matrix
+            for j in range(args.n):
+                matrix[j] /= np.linalg.norm(matrix[j])
             
             # if success to construct a lattice, break the loop
             if status:

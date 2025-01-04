@@ -9,7 +9,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--n'          , type = int   , default = 3           ) # lattice dimension
 parser.add_argument('--epoch'      , type = int   , default = 1000000     ) # number of iterations
-parser.add_argument('--dbg_times'  , type = int   , default = 20          ) # number of debug information
+parser.add_argument('--dbg_times'  , type = int   , default = 100         ) # number of debug information
 parser.add_argument('--try_time'   , type = int   , default = 100         ) # number of tries
 parser.add_argument('--mu_0'       , type = float , default = 0.005       ) # initial learning rate
 parser.add_argument('--delta'      , type = float , default = 0.75        ) # LLL parameter

@@ -1,6 +1,6 @@
 import numpy as np
-from closest_algo import get_closest_point as CLP
-from args import args
+from .closest_algo import get_closest_point as CLP
+from .args import args
 
 # sample from a normal distribution
 def gaussian_random(array):
