@@ -18,6 +18,7 @@ parser.add_argument('--mod'        , type = int   , default = 100         ) # nu
 parser.add_argument('--log'        , type = str   , default = './log'     ) # log file
 args = parser.parse_args()
 assert args.n > 0
-parser.add_argument('--sample'     , type = int   , default = 1000000 // args.n     ) # number of samples per dimension
+#parser.add_argument('--sample'     , type = int   , default = 1000000 // args.n     ) # number of samples per dimension
+parser.add_argument('--sample'     , type = int   , default = 1000000     )
 parser.add_argument('--dbg_epoch'  , type = int   , default = int(args.epoch / args.dbg_times) ) # number of iterations between two consecutive debug information
 args = parser.parse_args()

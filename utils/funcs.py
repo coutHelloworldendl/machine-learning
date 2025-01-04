@@ -26,15 +26,14 @@ def orthogonalize(matrix):
 # test the result lattice
 def NSM(matrix, n):
     random_matrix = np.random.rand(args.sample, n)
+    random_matrix = random_matrix @ matrix
     result_matrix = np.zeros((args.sample, n))
     for i in range(args.sample):
         result_matrix[i, :] = CLP(n, matrix, random_matrix[i])
-    result_matrix -= random_matrix
-    e_matrix = result_matrix @ matrix
-    row_length = np.linalg.norm(e_matrix, axis=1)
-    row_length_square = row_length ** 2
-    length_sum = np.sum(row_length_square)
-    return np.prod(np.diagonal(matrix)) ** (-2.0 / n) * length_sum / (args.sample * n)
+    result_matrix = random_matrix - result_matrix @ matrix
+    row_length_square = np.linalg.norm(result_matrix, axis=1) ** 2
+    length_sum = np.mean(row_length_square)
+    return (np.prod(np.diagonal(matrix)) ** (-2.0 / n)) * length_sum / n
 
 if __name__ == '__main__':
     '''
@@ -47,7 +46,12 @@ if __name__ == '__main__':
     '''
     matrix = np.array([[1, 0, 0], 
                        [0.3639316864866463663, 1.028057868749959747, 0], 
-                       [-0.3643806993546727102, 0.5134608145305991078, 0.8911988783086500776]], 
+                       [-0.3643806993546727102, 0.5134608145305991078, 0.8911988783086500776]],
+                      dtype = np.float64)
+    print(NSM(matrix, 3))
+    matrix = np.array([[1, 0, 0], 
+                       [-0.5, np.sqrt(3.0)/2.0, 0], 
+                       [-0.5, np.sqrt(3.0)/6.0, np.sqrt(2/3)]],
                       dtype = np.float64)
     print(NSM(matrix, 3))
     
