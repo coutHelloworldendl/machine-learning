@@ -36,22 +36,28 @@ def NSM(matrix, n):
     return (np.prod(np.diagonal(matrix)) ** (-2.0 / n)) * length_sum / n
 
 if __name__ == '__main__':
-    '''
+    matrix = np.array([[1, 0, 0], 
+                       [0.3639316864866463663, 1.028057868749959747, 0], 
+                       [-0.3643806993546727102, 0.5134608145305991078, 0.8911988783086500776]],
+                      dtype = np.float64)
+    print("NSM = {}".format(NSM(matrix, 3)))
+    matrix = np.array([[1, 0, 0], 
+                       [-0.5, np.sqrt(3.0)/2.0, 0], 
+                       [-0.5, np.sqrt(3.0)/6.0, np.sqrt(2/3)]],
+                      dtype = np.float64)
+    print("NSM = {}".format(NSM(matrix, 3)))
+    matrix = np.array([[1, 0, 0], 
+                       [0, 1, 0],
+                       [0, 0, 1]],dtype=np.float64)
+    print("NSM = {} , std = {}".format(NSM(matrix, 3), 1.0 / 12))
+    matrix = np.array([[2, 0, 0], 
+                       [0, 2, 0],
+                       [0, 0, 2]], dtype=np.float64)
+    print("NSM = {} , std = {}".format(NSM(matrix, 3), 1.0 / 12))
     for n in range(2, 30):
         array = []
         for _ in range(100):
             matrix = np.array(np.eye(n), dtype = np.float64)
             array.append(NSM(matrix, n))
         print('n = {}, mean = {}, variance = {}'.format(n, np.mean(array), np.var(array)))
-    '''
-    matrix = np.array([[1, 0, 0], 
-                       [0.3639316864866463663, 1.028057868749959747, 0], 
-                       [-0.3643806993546727102, 0.5134608145305991078, 0.8911988783086500776]],
-                      dtype = np.float64)
-    print(NSM(matrix, 3))
-    matrix = np.array([[1, 0, 0], 
-                       [-0.5, np.sqrt(3.0)/2.0, 0], 
-                       [-0.5, np.sqrt(3.0)/6.0, np.sqrt(2/3)]],
-                      dtype = np.float64)
-    print(NSM(matrix, 3))
     
