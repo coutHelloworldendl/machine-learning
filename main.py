@@ -36,10 +36,11 @@ def construct_lattice(n, f):
         y = z - CLP(n, matrix, z @ matrix)
         e = y @ matrix
         e_2norm = np.linalg.norm(e) ** 2 # squared 2-norm
-        for i in range(n):
-            for j in range(i):
-                matrix[i][j] -= mu * y[i] * e[j]
-            matrix[i][i] -= mu * (y[i] * e[i] - e_2norm / (n * matrix[i][i])) # gradient descent
+
+        prod = np.expand_dims(y, axis=1) @ np.expand_dims(e, axis=0)
+        matrix -= np.tril(mu * prod)
+        matrix += np.eye(n) * mu * (e_2norm / (n * np.diag(matrix)))
+
         result = SC(matrix, n) # sanity check
         if not result:
             f.write('Fail to construct a lattice\n')
@@ -47,7 +48,7 @@ def construct_lattice(n, f):
         if t % args.mod == args.mod - 1:
             matrix = RED(matrix, n=n, delta=args.delta)
             matrix = ORTH(matrix)
-            v = np.prod([matrix[i][i] for i in range(n)])
+            v = np.prod(np.diag(matrix))
             matrix = matrix * pow(v, -1/n)
         if (t + 1) % args.dbg_epoch == 0:
             nsm = NSM(matrix, n)

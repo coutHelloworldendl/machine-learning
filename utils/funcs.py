@@ -12,10 +12,7 @@ def uniform_random(array):
 
 # sanity check
 def sanity_check(matrix, n):
-    if np.min([matrix[i][i] for i in range(n)]) <= 0:
-        return False
-    else:
-        return True
+    return np.min(np.diag(matrix)) > 0
     
 # cholosky decomposition
 def orthogonalize(matrix):
