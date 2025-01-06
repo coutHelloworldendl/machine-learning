@@ -8,7 +8,7 @@ lib.get_closest_point.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.POINTER(ct
 n: number of dimensions 
 G: generator matrix of the lattice (lower-triangular, positive diagonal elements)
 r: point in n-dimensional space
-return: coordinates of the closest point in the lattice to r
+return: coordinates of the closest point to r in the lattice 
 '''
 def get_closest_point(n: int, G: np.ndarray, r: np.ndarray): 
     result = np.zeros(n, dtype=np.int32)
