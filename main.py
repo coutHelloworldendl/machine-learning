@@ -57,6 +57,10 @@ def construct_lattice(n, f):
     return True, matrix, NSM_array
 
 if __name__ == '__main__':
+    
+    # print all the elements in the matrix
+    np.set_printoptions(threshold=np.inf)
+    
     # create log file path
     if not os.path.exists(args.log):
         os.makedirs(args.log)
