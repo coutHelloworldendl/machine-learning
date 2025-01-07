@@ -1,1 +1,0 @@
-args = Namespace(n=10, epoch=1000000, dbg_times=100, try_time=100, mu_0=0.005, delta=0.75, nu=200, mod=100, log='./log', sample=100000, dbg_epoch=10000)
