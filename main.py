@@ -12,7 +12,7 @@ from utils.lll_algo import lll_algorithm as RED
 from utils.args import args
 
 class Adam:
-    def __init__(self, beta1=0.9, beta2=0.999, epsilon=1e-8):
+    def __init__(self, beta1=0.9, beta2=0.995, epsilon=1e-8):
         self.beta1, self.beta2, self.epsilon = beta1, beta2, epsilon
         self.reset()
     
@@ -28,15 +28,16 @@ class Adam:
         self.m, self.v, self.t = 0, 0, 0
 
 class Scheduler:
-    def __init__(self, lr_initial, lr_max, nu, epoch, warm_up=0.1):
-        self.lr_initial, self.lr_max, self.nu, self.epoch, self.warm_up = lr_initial, lr_max, nu, epoch, warm_up
+    def __init__(self, args):
+        self.lr_initial, self.lr_max, self.nu, self.epoch, self.warm_up = args.mu_0 / args.nu, args.mu_0, args.nu, args.epoch, args.warm_up
     
     def step(self, t):
         shreshold = self.epoch * self.warm_up
         if t < shreshold:
             return self.lr_initial + (self.lr_max - self.lr_initial) * t / (self.epoch * self.warm_up)
-        else:
+        else: 
             return self.lr_max * pow(self.nu, -(t - shreshold) / (self.epoch - shreshold))
+            
 
 # construct a lattice
 def construct_lattice(n, f):
@@ -57,7 +58,7 @@ def construct_lattice(n, f):
     matrix = matrix * pow(v, -1.0/n)
 
     optimizer = Adam()
-    scheduler = Scheduler(args.mu_0 / args.nu, args.mu_0, args.nu, args.epoch)
+    scheduler = Scheduler(args)
     
     # main loop
     for t in tqdm(range(args.epoch), desc = 'Constructing lattice'):
@@ -137,7 +138,7 @@ if __name__ == '__main__':
     plt.savefig(graph_path)
     
     # visualize the curve
-    x = [i for i in range(1, args.epoch + 1, args.dbg_epoch)]
+    x = np.arange(1, args.epoch + 1, args.dbg_epoch)
     plt.clf()
     plt.plot(x, array)
     plt.savefig(curve_path)
