@@ -11,6 +11,33 @@ from utils.closest_algo import get_closest_point as CLP
 from utils.lll_algo import lll_algorithm as RED
 from utils.args import args
 
+class Adam:
+    def __init__(self, beta1=0.9, beta2=0.999, epsilon=1e-8):
+        self.beta1, self.beta2, self.epsilon = beta1, beta2, epsilon
+        self.reset()
+    
+    def step(self, g: np.ndarray):
+        self.t += 1
+        self.m = self.beta1 * self.m + (1 - self.beta1) * g
+        self.v = self.beta2 * self.v + (1 - self.beta2) * np.linalg.norm(g)
+        m_hat = self.m / (1 - self.beta1 ** self.t)
+        v_hat = self.v / (1 - self.beta2 ** self.t)
+        return m_hat / (v_hat + self.epsilon)
+    
+    def reset(self):
+        self.m, self.v, self.t = 0, 0, 0
+
+class Scheduler:
+    def __init__(self, lr_initial, lr_max, nu, epoch, warm_up=0.1):
+        self.lr_initial, self.lr_max, self.nu, self.epoch, self.warm_up = lr_initial, lr_max, nu, epoch, warm_up
+    
+    def step(self, t):
+        shreshold = self.epoch * self.warm_up
+        if t < shreshold:
+            return self.lr_initial + (self.lr_max - self.lr_initial) * t / (self.epoch * self.warm_up)
+        else:
+            return self.lr_max * pow(self.nu, -(t - shreshold) / (self.epoch - shreshold))
+
 # construct a lattice
 def construct_lattice(n, f):
     # record NSM
@@ -28,24 +55,29 @@ def construct_lattice(n, f):
     # normalize the matrix
     v = np.prod([matrix[i][i] for i in range(n)])
     matrix = matrix * pow(v, -1.0/n)
+
+    optimizer = Adam()
+    scheduler = Scheduler(args.mu_0 / args.nu, args.mu_0, args.nu, args.epoch)
     
     # main loop
     for t in tqdm(range(args.epoch), desc = 'Constructing lattice'):
-        mu = args.mu_0 * pow(args.nu, -t/(args.epoch - 1))
+        mu = scheduler.step(t)
         z = URAN([n])
         y = z - CLP(n, matrix, z @ matrix)
         e = y @ matrix
         e_2norm = np.linalg.norm(e) ** 2 # squared 2-norm
 
         prod = np.expand_dims(y, axis=1) @ np.expand_dims(e, axis=0)
-        matrix -= np.tril(mu * prod)
-        matrix += np.eye(n) * mu * (e_2norm / (n * np.diag(matrix)))
+        grad = np.tril(prod) - np.eye(n) * (e_2norm / (n * np.diag(matrix)))
+
+        matrix -= mu * optimizer.step(grad)
 
         result = SC(matrix, n) # sanity check
         if not result:
             f.write('Fail to construct a lattice\n')
             return False, None, None
         if t % args.mod == args.mod - 1:
+            optimizer.reset()
             matrix = RED(matrix, n=n, delta=args.delta)
             matrix = ORTH(matrix)
             v = np.prod(np.diag(matrix))
