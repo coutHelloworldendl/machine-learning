@@ -21,11 +21,11 @@ def orthogonalize(matrix):
     return matrix
 
 # test the result lattice
-def NSM(matrix, n):
-    random_matrix = np.random.rand(args.sample, n)
+def NSM(matrix, n, sample):
+    random_matrix = np.random.rand(sample, n)
     random_matrix = random_matrix @ matrix
-    result_matrix = np.zeros((args.sample, n))
-    for i in range(args.sample):
+    result_matrix = np.zeros((sample, n))
+    for i in range(sample):
         result_matrix[i, :] = CLP(n, matrix, random_matrix[i])
     result_matrix = random_matrix - result_matrix @ matrix
     row_length_square = np.linalg.norm(result_matrix, axis=1) ** 2
