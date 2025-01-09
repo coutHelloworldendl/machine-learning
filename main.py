@@ -95,7 +95,7 @@ def construct_lattice(n, f):
             v = np.prod(np.diag(matrix))
             matrix = matrix * pow(v, -1/n)
         if args.dbg_epoch > 0 and (t + 1) % args.dbg_epoch == 0:
-            nsm = NSM(matrix, n, args.dbg_sample)
+            nsm = NSM(matrix, n, args.dbg_sample // n)
             f.write('Epoch = {}, NSM = {}, matrix =\n{}\n'.format(t + 1, nsm, matrix))
             NSM_array.append(nsm)
     return True, matrix, NSM_array
@@ -109,53 +109,55 @@ if __name__ == '__main__':
     if not os.path.exists(args.log):
         os.makedirs(args.log)
     
-    # create log file
-    log_path = args.log + '/log-dim-' + str(args.n) + '.txt'
-    result_path = args.log + '/result-dim-' + str(args.n) + '.txt'
-    graph_path = args.log + '/graph-dim-' + str(args.n) + '.png'
-    curve_path = args.log + '/curve-dim-' + str(args.n) + '.png'
-        
-    # construct a lattice
-    with open(log_path, 'w') as f:
-        # training args
-        f.write('args = {}\n'.format(args))
-        
-        for i in range(args.try_time):
-            
-            # try to construct a lattice
-            status, matrix, array = construct_lattice(args.n, f)
-            
-            # normalize the matrix
-            for j in range(args.n):
-                matrix[j] /= np.linalg.norm(matrix[j])
-            
-            # if success to construct a lattice, break the loop
-            if status:
-                print('Success to construct a lattice after {} times'.format(i + 1))
-                break
-            
-            # if fail to construct a lattice, try again, up to args.try_time times
-            if i == args.try_time - 1:
-                print('Fail to construct a lattice after {} times'.format(args.try_time))
-                exit(0)
+    for n in args.n:
     
-    # evaluate the lattice
-    print('Evaluate the lattice:', end=' ')
-    nsm = NSM(matrix, args.n, args.test_sample)
-    print('NSM = {}'.format(nsm))
-    
-    # save the result
-    with open(result_path, 'w') as f:
-        f.write('Lattice =\n{},\nNSM =\n{}'.format(matrix, nsm))
+        # create log file
+        log_path = args.log + '/log-dim-' + str(n) + '.txt'
+        result_path = args.log + '/result-dim-' + str(n) + '.txt'
+        graph_path = args.log + '/graph-dim-' + str(n) + '.png'
+        curve_path = args.log + '/curve-dim-' + str(n) + '.png'
         
-    # visualize the matrix
-    plt.matshow(matrix)
-    plt.colorbar()
-    plt.savefig(graph_path)
+        # construct a lattice
+        with open(log_path, 'w') as f:
+            # training args
+            f.write('args = {}\n'.format(args))
+        
+            for i in range(args.try_time):
+            
+                # try to construct a lattice
+                status, matrix, array = construct_lattice(n, f)
+            
+                # normalize the matrix
+                for j in range(n):
+                    matrix[j] /= np.linalg.norm(matrix[j])
+            
+                # if success to construct a lattice, break the loop
+                if status:
+                    print('Success to construct a lattice after {} times'.format(i + 1))
+                    break
+            
+                # if fail to construct a lattice, try again, up to args.try_time times
+                if i == args.try_time - 1:
+                    print('Fail to construct a lattice after {} times'.format(args.try_time))
+                    exit(0)
     
-    # visualize the curve
-    if args.dbg_epoch > 0:
-        x = np.arange(1, args.epoch + 1, args.dbg_epoch)
-        plt.clf()
-        plt.plot(x, array)
-        plt.savefig(curve_path)
+        # evaluate the lattice
+        print('Evaluate the lattice:', end=' ')
+        nsm = NSM(matrix, n, args.test_sample)
+        print('NSM = {}'.format(nsm))
+    
+        # save the result
+        with open(result_path, 'w') as f:
+            f.write('Lattice =\n{},\nNSM =\n{}'.format(matrix, nsm))
+        
+        # visualize the matrix
+        plt.matshow(matrix)
+        plt.colorbar()
+        plt.savefig(graph_path)
+    
+        # visualize the curve
+        if args.dbg_epoch > 0:
+            x = np.arange(1, args.epoch + 1, args.dbg_epoch)
+            plt.clf()
+            plt.plot(x, array)
+            plt.savefig(curve_path)

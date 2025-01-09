@@ -9,7 +9,7 @@ import argparse
 parser = argparse.ArgumentParser()
 
 # the dimension of the lattice, n >= 1
-parser.add_argument('--n'          , type = int   , default = 3           ) 
+parser.add_argument('--n'          , type = list[int]   , default = [2, 3]   ) 
 # run the algorithm for at most epoch times, fast = 100w, mid = 1000w, slow = 10000w
 parser.add_argument('--epoch'      , type = int   , default = 1000000     ) 
 # show the debug information (NSM and matrix) for at most dbg_times times
@@ -18,9 +18,9 @@ parser.add_argument('--dbg_times'  , type = int   , default = 0           )
 # number of try times when constructing a lattice
 parser.add_argument('--try_time'   , type = int   , default = 100         ) 
 # max learning rate
-parser.add_argument('--mu_0'       , type = float , default = 0.01       ) 
+parser.add_argument('--mu_0'       , type = float , default = 0.01        ) 
 # warm up rate
-parser.add_argument('--warm_up'       , type = float , default = 0.1      ) 
+parser.add_argument('--warm_up'    , type = float , default = 0.1         ) 
 # the delta parameter of the LLL algorithm
 parser.add_argument('--delta'      , type = float , default = 0.75        ) 
 # the decay rate of the learning rate
@@ -33,10 +33,11 @@ parser.add_argument('--log'        , type = str   , default = './log'     )
 parser.add_argument('--test_sample'    , type = int   , default = 1000000 )
 
 args = parser.parse_args()
-assert args.n > 0 
+for n in args.n:
+    assert n >= 1
 
-# number of samples computing NSM for intermediate debug information
-parser.add_argument('--dbg_sample'     , type = int   , default = 1000000 // args.n     )
+# number of samples computing NSM for intermediate debug information, divide by n in main.py
+parser.add_argument('--dbg_sample'     , type = int   , default = 1000000     )
 # number of iterations between two consecutive debug information
 parser.add_argument('--dbg_epoch'  , type = int   , default = int(args.epoch / args.dbg_times) if args.dbg_times > 0 else 0)
 
