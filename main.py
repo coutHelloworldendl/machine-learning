@@ -1,6 +1,7 @@
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 from utils.funcs import gaussian_random as GRAN
 from utils.funcs import uniform_random as URAN
@@ -66,6 +67,15 @@ def construct_lattice(n, f):
     # initialize the optimizer and scheduler
     optimizer = Adam()
     scheduler = Scheduler(args)
+
+    def sample_grad():
+        z = URAN([n])
+        y = z - CLP(n, matrix, z @ matrix)
+        e = y @ matrix
+        e_2norm = np.linalg.norm(e) ** 2
+
+        prod = np.expand_dims(y, axis=1) @ np.expand_dims(e, axis=0)
+        return np.tril(prod) - np.eye(n) * (e_2norm / (n * np.diag(matrix)))
     
     # main loop
     for t in tqdm(range(args.epoch), desc = 'Constructing lattice'):
@@ -73,13 +83,13 @@ def construct_lattice(n, f):
         # set the learning rate according to epoch
         mu = scheduler.step(t)
         
-        z = URAN([n])
-        y = z - CLP(n, matrix, z @ matrix)
-        e = y @ matrix
-        e_2norm = np.linalg.norm(e) ** 2 # squared 2-norm
-
-        prod = np.expand_dims(y, axis=1) @ np.expand_dims(e, axis=0)
-        grad = np.tril(prod) - np.eye(n) * (e_2norm / (n * np.diag(matrix)))
+        # sample the gradient
+        grad = np.zeros((n, n))
+        with ThreadPoolExecutor(max_workers = args.num_workers) as executor:
+            futures = [executor.submit(sample_grad) for _ in range(args.batch_size)]
+            for future in futures:
+                grad += future.result()
+        grad /= args.batch_size
 
         # update the matrix
         matrix -= mu * optimizer.step(grad)
