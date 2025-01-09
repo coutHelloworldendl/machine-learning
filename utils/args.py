@@ -9,7 +9,7 @@ import argparse
 parser = argparse.ArgumentParser()
 
 # the dimension of the lattice, n >= 1
-parser.add_argument('--n'          , type = int   , default = 3           ) 
+parser.add_argument('--n'          , type = list[int]   , default = range(5, 30) ) 
 # run the algorithm for at most epoch times, fast = 100w, mid = 1000w, slow = 10000w
 parser.add_argument('--epoch'      , type = int   , default = 1000000     ) 
 parser.add_argument('--batch_size' , type = int   , default = 8           )
@@ -35,11 +35,12 @@ parser.add_argument('--log'        , type = str   , default = './log'     )
 parser.add_argument('--test_sample', type = int   , default = 1000000     )
 
 args = parser.parse_args()
-assert args.n > 0 
+for n in args.n:
+    assert n >= 1
 
-# number of samples computing NSM for intermediate debug information
-parser.add_argument('--dbg_sample'     , type = int   , default = 1000000 // args.n     )
+# number of samples computing NSM for intermediate debug information, divide by n in main.py
+parser.add_argument('--dbg_sample'     , type = int   , default = 1000000     )
 # number of iterations between two consecutive debug information
-parser.add_argument('--dbg_epoch'  , type = int   , default = int(args.epoch / args.dbg_times) if args.dbg_times > 0 else 0)
+parser.add_argument('--dbg_interval'  , type = int   , default = int(args.epoch / args.dbg_times) if args.dbg_times > 0 else 0)
 
 args = parser.parse_args()
