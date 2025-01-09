@@ -68,7 +68,7 @@ def construct_lattice(n, f):
     scheduler = Scheduler(args)
     
     # main loop
-    for t in tqdm(range(args.epoch), desc = 'Constructing lattice'):
+    for t in tqdm(range(args.epoch), desc = 'Constructing {}-dim lattice'.format(n)):
         
         # set the learning rate according to epoch
         mu = scheduler.step(t)
@@ -94,7 +94,7 @@ def construct_lattice(n, f):
             matrix = ORTH(matrix)
             v = np.prod(np.diag(matrix))
             matrix = matrix * pow(v, -1/n)
-        if args.dbg_epoch > 0 and (t + 1) % args.dbg_epoch == 0:
+        if args.dbg_interval > 0 and (t + 1) % args.dbg_interval == 0:
             nsm = NSM(matrix, n, args.dbg_sample // n)
             f.write('Epoch = {}, NSM = {}, matrix =\n{}\n'.format(t + 1, nsm, matrix))
             NSM_array.append(nsm)
@@ -156,8 +156,8 @@ if __name__ == '__main__':
         plt.savefig(graph_path)
     
         # visualize the curve
-        if args.dbg_epoch > 0:
-            x = np.arange(1, args.epoch + 1, args.dbg_epoch)
+        if args.dbg_interval > 0:
+            x = np.arange(1, args.epoch + 1, args.dbg_interval)
             plt.clf()
             plt.plot(x, array)
             plt.savefig(curve_path)
