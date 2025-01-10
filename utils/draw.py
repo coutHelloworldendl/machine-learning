@@ -86,9 +86,13 @@ def draw_theta_image(lattice, u_bidirection_range, image_x_upper_bound:float, sa
     
     # initialize the plot
     plt.clf()
-    for x in x_dot_range:
-        # plot the log10 of the number of dots <= x
-        plt.scatter(x, math.log10(bin_search(distance_array, x)))
+    
+    # set labels
+    plt.xlabel('r^2')
+    plt.ylabel('log10(N(B,r))')
+    
+    # plot the dots
+    plt.plot(x_dot_range, [math.log10(bin_search(distance_array, x)) for x in x_dot_range], linestyle='--', marker='')
         
     # save or show the plot
     if mode == 'save' :

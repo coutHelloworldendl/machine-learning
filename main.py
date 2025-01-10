@@ -95,7 +95,7 @@ def construct_lattice(n, f):
         # update the matrix
         matrix -= mu * optimizer.step(grad)
 
-        result = SC(matrix, n) # sanity check
+        result = SC(matrix) # sanity check
         if not result:
             f.write('Fail to construct a lattice\n')
             return False, None, None
