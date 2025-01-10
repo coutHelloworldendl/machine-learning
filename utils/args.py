@@ -9,7 +9,7 @@ import argparse
 parser = argparse.ArgumentParser()
 
 # the dimension of the lattice, n >= 1
-parser.add_argument('--n'          , type = list[int]   , default = [3] ) 
+parser.add_argument('--n'          , type = list[int]   , default = [3]   )
 # the number of batches in one epoch
 parser.add_argument('--batch_size' , type = int   , default = 8           )
 # the number of workers in the thread pool
