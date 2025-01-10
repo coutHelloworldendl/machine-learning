@@ -9,7 +9,7 @@ import argparse
 parser = argparse.ArgumentParser()
 
 # the dimension of the lattice, n >= 1
-parser.add_argument('--n'          , type = list[int]   , default = range(2, 30) ) 
+parser.add_argument('--n'          , type = list[int]   , default = [3] ) 
 # the number of batches in one epoch
 parser.add_argument('--batch_size' , type = int   , default = 8           )
 # the number of workers in the thread pool
@@ -38,7 +38,7 @@ parser.add_argument('--test_sample', type = int   , default = 1000000     )
 # 1. save mode: save the image to the path
 # 2. show mode: show the image in the window
 # 3. empty mode: do nothing, default, if want to draw specific image, set the corresponding mode to 'save' or 'show'
-parser.add_argument('--theta_image_mode'  , type = str  , default = 'empty'     )
+parser.add_argument('--theta_image_mode'  , type = str  , default = 'save'     )
 parser.add_argument('--descend_curve_mode', type = str  , default = 'empty'     )
 parser.add_argument('--lattice_graph_mode', type = str  , default = 'empty'     )
 
@@ -51,7 +51,7 @@ args = parser.parse_args()
 for n in args.n:
     assert n >= 1
 # run the algorithm for at most epoch times, fast = 100w, mid = 1000w, slow = 10000w
-parser.add_argument('--epoch'      , type = int   , default = 1000000 // (args.batch_size * args.num_workers) )
+parser.add_argument('--epoch'          , type = int   , default = 1000000 // (args.batch_size * args.num_workers) )
 args = parser.parse_args()
 # number of samples computing NSM for intermediate debug information, divide by n in main.py
 parser.add_argument('--dbg_sample'     , type = int   , default = 1000000     )
