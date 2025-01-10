@@ -11,24 +11,6 @@ from utils.closest_algo import get_closest_point as CLP
 from utils.lll_algo import lll_algorithm as RED
 from utils.args import args
 from utils.funcs import read_lattice as read_lattice
-#read file
-def read_lattice(filename):
-    lattice = []
-    nsm = None
-    with open(filename, 'r') as file:
-        lines = file.readlines()
-    for i, line in enumerate(lines):
-        if line.strip().startswith('Lattice'):
-            start_index = i + 1
-        elif line.strip().startswith('NSM'):
-            end_index = i - 1
-            break
-    if start_index is not None and end_index is not None:
-        for line in lines[start_index:end_index + 1]:
-            row = line.strip().replace('[', '').replace(']', '').replace(',', '').split()
-            lattice.append([float(x) for x in row])
-    
-    return lattice
 
 # Adam optimizer
 class Adam:
@@ -69,20 +51,9 @@ def construct_lattice(n, f):
     # record NSM
     NSM_array = []
     
-    #Initialize with low-dimensional basis
-    #thus, steps to ensure matrix a positive definite matrix 
-    #and decompose the matrix into a lower triangular matrix
-    #are useless
-    n1=n//2
-    n2=n-n1
-    filename1 = 'record/result-dim-'+ str(n1) +'.txt'
-    filename2 = 'record/result-dim-'+ str(n2) +'.txt'
-    lattice1 = read_lattice(filename1)
-    lattice2 = read_lattice(filename2)
-
-    matrix = np.zeros((n, n))
-    matrix[:n1,:n1] = lattice1
-    matrix[n1:,n1:] = lattice2
+    # load the lattice from the file
+    if args.load_lattice:
+        matrix = read_lattice(n)
     
     # normalize the matrix
     v = np.prod([matrix[i][i] for i in range(n)])

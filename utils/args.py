@@ -34,7 +34,9 @@ parser.add_argument('--log'        , type = str   , default = './log'     )
 #combined record path
 parser.add_argument('--record'        , type = str   , default = './record'     )
 # number of samples computing NSM for final result
-parser.add_argument('--test_sample', type = int   , default = 1000000     )
+parser.add_argument('--test_sample'  , type = int   , default = 1000000     )
+# whether to load the lattice from the file
+parser.add_argument('--load_lattice'  , type = bool  , default = True       )
 
 # the mode of all images 
 # 1. save mode: save the image to the path
