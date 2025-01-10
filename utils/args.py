@@ -31,6 +31,8 @@ parser.add_argument('--nu'         , type = float , default = 200         )
 parser.add_argument('--mod'        , type = int   , default = 100         )
 # log file path
 parser.add_argument('--log'        , type = str   , default = './log'     )
+#combined record path
+parser.add_argument('--record'        , type = str   , default = './record'     )
 # number of samples computing NSM for final result
 parser.add_argument('--test_sample', type = int   , default = 1000000     )
 
