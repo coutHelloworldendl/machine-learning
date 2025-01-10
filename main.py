@@ -10,6 +10,7 @@ from utils.funcs import NSM as NSM
 from utils.funcs import sanity_check as SC
 from utils.closest_algo import get_closest_point as CLP
 from utils.lll_algo import lll_algorithm as RED
+from utils.draw import draw_theta_image, draw_descend_curve, draw_lattice
 from utils.args import args
 
 # Adam optimizer
@@ -124,8 +125,6 @@ if __name__ == '__main__':
         # create log file
         log_path = args.log + '/log-dim-' + str(n) + '.txt'
         result_path = args.log + '/result-dim-' + str(n) + '.txt'
-        graph_path = args.log + '/graph-dim-' + str(n) + '.png'
-        curve_path = args.log + '/curve-dim-' + str(n) + '.png'
         
         # construct a lattice
         with open(log_path, 'w') as f:
@@ -160,14 +159,13 @@ if __name__ == '__main__':
         with open(result_path, 'w') as f:
             f.write('Lattice =\n{},\nNSM =\n{}'.format(matrix, nsm))
         
-        # visualize the matrix
-        plt.matshow(matrix)
-        plt.colorbar()
-        plt.savefig(graph_path)
+        # draw images
+        draw_theta_image(lattice=matrix, 
+                         u_bidirection_range=args.u_bidirection_range, 
+                         image_x_upper_bound=args.image_x_upper_bound, 
+                         sample_num=args.sample_num, 
+                         mode=args.theta_image_mode)
+        draw_descend_curve(array, n, mode=args.descend_curve_mode)
+        draw_lattice(matrix, n, mode=args.lattice_graph_mode)
     
-        # visualize the curve
-        if args.dbg_interval > 0:
-            x = np.arange(1, args.epoch + 1, args.dbg_interval)
-            plt.clf()
-            plt.plot(x, array)
-            plt.savefig(curve_path)
+        

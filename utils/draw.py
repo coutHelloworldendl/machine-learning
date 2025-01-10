@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-from args import args
+from .args import args
 
 # the result of our 10-dimension lattice
 dim_10_lattice = np.array([[ 1.         , 0.        ,  0.         , 0.   ,       0.       ,   0.,
@@ -60,7 +60,7 @@ def theta_image_dfs(lattice, pos, dim, store_array:list[int], u_array, u_bidirec
 def draw_theta_image(lattice, u_bidirection_range, image_x_upper_bound:float, sample_num:float, mode='save'):
     # sanity check of attributes
     if mode not in ['save', 'show', 'empty']:
-        raise ValueError("mode should be 'save' or 'show' or 'empty'")
+        raise ValueError("theta image mode should be 'save' or 'show' or 'empty'")
     if mode == 'empty':
         return None
     assert len(lattice.shape) == 2
@@ -96,6 +96,36 @@ def draw_theta_image(lattice, u_bidirection_range, image_x_upper_bound:float, sa
         plt.savefig(path)
     elif mode == 'show' :
         plt.show()
+
+# draw descend curve
+def draw_descend_curve(array, n, mode):
+    if mode not in ['save', 'show', 'empty']:
+        raise ValueError("descend curve mode should be 'save' or 'show' or 'empty'")
+    if mode == 'empty' or args.dbg_interval <= 0 :
+        return
+    plt.clf()
+    path = args.log + '/curve-dim-' + str(n) + '.png'
+    x = np.arange(1, args.epoch + 1, args.dbg_interval)
+    plt.plot(x, array)
+    if mode == 'show':
+        plt.show()
+    else:
+        plt.savefig(path)
+            
+# draw lattice graph
+def draw_lattice(matrix, n, mode):
+    if mode not in ['save', 'show', 'empty']:
+        raise ValueError("draw mode should be 'save' or 'show' or 'empty'")
+    if mode == 'empty':
+        return
+    plt.clf()
+    path = args.log + '/graph-dim-' + str(n) + '.png'
+    plt.matshow(matrix)
+    plt.colorbar()
+    if mode == 'show':
+        plt.show()
+    else:
+        plt.savefig(path)
 
 if __name__ == '__main__':
     
