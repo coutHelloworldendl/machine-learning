@@ -1,6 +1,6 @@
 import numpy as np
-from .closest_algo import get_closest_point as CLP
-from .args import args
+from closest_algo import get_closest_point as CLP
+from args import args
 
 # sample from a normal distribution
 def gaussian_random(array):
@@ -11,7 +11,7 @@ def uniform_random(array):
     return np.random.uniform(low = 0, high = 1, size = array)
 
 # sanity check
-def sanity_check(matrix, n):
+def sanity_check(matrix):
     return np.min(np.diag(matrix)) > 0
     
 # cholosky decomposition
@@ -37,20 +37,20 @@ if __name__ == '__main__':
                        [0.3639316864866463663, 1.028057868749959747, 0], 
                        [-0.3643806993546727102, 0.5134608145305991078, 0.8911988783086500776]],
                       dtype = np.float64)
-    print("NSM = {}".format(NSM(matrix, 3)))
+    print("NSM = {}".format(NSM(matrix, 3, args.test_sample)))
     matrix = np.array([[1, 0, 0], 
                        [-0.5, np.sqrt(3.0)/2.0, 0], 
-                       [-0.5, np.sqrt(3.0)/6.0, np.sqrt(2/3)]],
+                       [-0.5, np.sqrt(3.0)/6.0, np.sqrt(2.0/3.0)]],
                       dtype = np.float64)
-    print("NSM = {}".format(NSM(matrix, 3)))
+    print("NSM = {}".format(NSM(matrix, 3, args.test_sample)))
     matrix = np.array([[1, 0, 0], 
                        [0, 1, 0],
                        [0, 0, 1]],dtype=np.float64)
-    print("NSM = {} , std = {}".format(NSM(matrix, 3), 1.0 / 12))
+    print("NSM = {} , std = {}".format(NSM(matrix, 3, args.test_sample), 1.0 / 12))
     matrix = np.array([[2, 0, 0], 
                        [0, 2, 0],
                        [0, 0, 2]], dtype=np.float64)
-    print("NSM = {} , std = {}".format(NSM(matrix, 3), 1.0 / 12))
+    print("NSM = {} , std = {}".format(NSM(matrix, 3, args.test_sample), 1.0 / 12))
     '''
     for n in range(2, 30):
         array = []
