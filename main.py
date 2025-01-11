@@ -158,14 +158,11 @@ if __name__ == '__main__':
         # save the result
         with open(result_path, 'w') as f:
             f.write('Lattice =\n{},\nNSM =\n{}'.format(matrix, nsm))
-        
-        # draw images
-        draw_theta_image(lattice=matrix, 
-                         u_bidirection_range=args.u_bidirection_range, 
-                         image_x_upper_bound=args.image_x_upper_bound, 
-                         sample_num=args.sample_num, 
-                         mode=args.theta_image_mode)
-        draw_descend_curve(array, n, mode=args.descend_curve_mode)
-        draw_lattice(matrix, n, mode=args.lattice_graph_mode)
     
-        
+    draw_theta_image(lattice=matrix, 
+                      u_bidirection_range=args.u_bidirection_range, 
+                      image_x_upper_bound=args.image_x_upper_bound, 
+                      sample_num=args.sample_num, 
+                      mode=args.theta_image_mode)
+    draw_descend_curve(array, n, mode=args.descend_curve_mode)
+    draw_lattice(matrix, n, mode=args.lattice_graph_mode)    

@@ -59,7 +59,7 @@ def theta_image_dfs(lattice, pos, dim, store_array:list[int], u_array, u_bidirec
 # - empty mode: do nothing
 def draw_theta_image(lattice, u_bidirection_range, image_x_upper_bound:float, sample_num:float, mode='save'):
     # sanity check of attributes
-    if mode not in ['save', 'show', 'empty']:
+    if mode not in ['save', 'show', 'empty', 'dot']:
         raise ValueError("theta image mode should be 'save' or 'show' or 'empty'")
     if mode == 'empty':
         return None
@@ -74,6 +74,10 @@ def draw_theta_image(lattice, u_bidirection_range, image_x_upper_bound:float, sa
     
     # initialize the u array
     u_array = [0] * dim
+    
+    # normalize the lattice
+    V = np.linalg.det(matrix)
+    matrix = matrix * (V ** (-1.0 / dim))
     
     # run the dfs, store the result in distance_array
     theta_image_dfs(lattice, 0, dim, distance_array, u_array, u_bidirection_range, image_x_upper_bound)
@@ -92,10 +96,16 @@ def draw_theta_image(lattice, u_bidirection_range, image_x_upper_bound:float, sa
     plt.ylabel('log10(N(B,r))')
     
     # plot the dots
-    plt.plot(x_dot_range, [math.log10(bin_search(distance_array, x)) for x in x_dot_range], linestyle='--', marker='')
-        
+    plt.plot(x_dot_range, [math.log10(bin_search(distance_array, x)) for x in x_dot_range], linestyle='--', marker='.')
+    
+    if mode == 'dot':
+        path = args.log + '/theta_img_dim-' + str(dim) + '.txt'
+        with open(path, 'w') as f:
+            for i in range(len(x_dot_range)):
+                f.write('{:10f} {:2}\n'.format(x_dot_range[i], int(bin_search(distance_array, x_dot_range[i]))))
+    
     # save or show the plot
-    if mode == 'save' :
+    elif mode == 'save' :
         path = args.log + '/theta_img_dim-' + str(dim) + '.png'
         plt.savefig(path)
     elif mode == 'show' :

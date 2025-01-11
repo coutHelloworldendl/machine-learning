@@ -9,7 +9,7 @@ import argparse
 parser = argparse.ArgumentParser()
 
 # the dimension of the lattice, n >= 1
-parser.add_argument('--n'          , type = list[int]   , default = [3]   )
+parser.add_argument('--n'          , type = list[int]   , default = [10]   )
 # the number of batches in one epoch
 parser.add_argument('--batch_size' , type = int   , default = 8           )
 # the number of workers in the thread pool
@@ -36,7 +36,7 @@ parser.add_argument('--record'        , type = str   , default = './record'     
 # number of samples computing NSM for final result
 parser.add_argument('--test_sample'  , type = int   , default = 1000000     )
 # whether to load the lattice from the file
-parser.add_argument('--load_lattice'  , type = bool  , default = True       )
+parser.add_argument('--load_lattice'  , type = bool  , default = False       )
 
 # the mode of all images 
 # 1. save mode: save the image to the path
@@ -47,9 +47,9 @@ parser.add_argument('--descend_curve_mode', type = str  , default = 'empty'     
 parser.add_argument('--lattice_graph_mode', type = str  , default = 'empty'     )
 
 # theta image parameters
-parser.add_argument('--u_bidirection_range', type = int    , default = 1        )
+parser.add_argument('--u_bidirection_range', type = int    , default = 2       )
 parser.add_argument('--image_x_upper_bound', type = float  , default = 5        )
-parser.add_argument('--sample_num'         , type = float  , default = 500      )
+parser.add_argument('--sample_num'         , type = float  , default = 1000      )
 
 args = parser.parse_args()
 for n in args.n:
