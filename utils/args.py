@@ -42,12 +42,12 @@ parser.add_argument('--load_lattice'  , type = bool  , default = False       )
 # 1. save mode: save the image to the path
 # 2. show mode: show the image in the window
 # 3. empty mode: do nothing, default, if want to draw specific image, set the corresponding mode to 'save' or 'show'
-parser.add_argument('--theta_image_mode'  , type = str  , default = 'save'     )
+parser.add_argument('--theta_image_mode'  , type = list[str]  , default = ['save', 'dot']     )
 parser.add_argument('--descend_curve_mode', type = str  , default = 'empty'     )
 parser.add_argument('--lattice_graph_mode', type = str  , default = 'empty'     )
 
 # theta image parameters
-parser.add_argument('--u_bidirection_range', type = int    , default = 2       )
+parser.add_argument('--u_bidirection_range', type = int    , default = 1       )
 parser.add_argument('--image_x_upper_bound', type = float  , default = 5        )
 parser.add_argument('--sample_num'         , type = float  , default = 1000      )
 
