@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import matplotlib.pyplot as plt
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 from tqdm import tqdm
 from utils.funcs import gaussian_random as GRAN
 from utils.funcs import uniform_random as URAN
@@ -46,6 +46,19 @@ class Scheduler:
         else: 
             return self.lr_max * pow(self.nu, -(t - threshold) / (self.epoch - threshold))
             
+def sample_grad(matrix, num):
+    grad = np.zeros((n, n))
+    e_2norm_total = 0
+    for _ in range(num):
+        z = URAN([n])
+        y = z - CLP(n, matrix, z @ matrix)
+        e = y @ matrix
+        e_2norm = np.linalg.norm(e) ** 2
+        e_2norm_total += e_2norm
+        prod = np.expand_dims(y, axis=1) @ np.expand_dims(e, axis=0)
+        grad += np.tril(prod) - np.eye(n) * (e_2norm / (n * np.diag(matrix)))
+
+    return grad, e_2norm_total
 
 # construct a lattice
 def construct_lattice(n, f):
@@ -69,15 +82,8 @@ def construct_lattice(n, f):
     optimizer = Adam()
     scheduler = Scheduler(args)
 
-    def sample_grad():
-        z = URAN([n])
-        y = z - CLP(n, matrix, z @ matrix)
-        e = y @ matrix
-        e_2norm = np.linalg.norm(e) ** 2
+    nsm_list = []
 
-        prod = np.expand_dims(y, axis=1) @ np.expand_dims(e, axis=0)
-        return np.tril(prod) - np.eye(n) * (e_2norm / (n * np.diag(matrix)))
-    
     # main loop
     for t in tqdm(range(args.epoch), desc = 'Constructing {}-dim lattice'.format(n)):
         
@@ -86,11 +92,21 @@ def construct_lattice(n, f):
         
         # sample the gradient
         grad = np.zeros((n, n))
-        with ThreadPoolExecutor(max_workers = args.num_workers) as executor:
-            futures = [executor.submit(sample_grad) for _ in range(args.batch_size)]
+        nsm = 0
+        with ProcessPoolExecutor(max_workers = args.num_workers) as executor:
+            num_tasks = args.batch_size // args.num_workers
+            futures = [executor.submit(sample_grad, matrix, num_tasks) for _ in range(args.num_workers)]
             for future in futures:
-                grad += future.result()
+                (g, e) = future.result()
+                grad += g
+                nsm += e
+
         grad /= args.batch_size
+        nsm_list.append(nsm / (args.batch_size * n * (np.prod(np.diag(matrix)) ** (2.0 / n))))
+
+        if (t + 1) % 1000 == 0:
+            print(f'Epoch = {t + 1}, NSM = {sum(nsm_list) / len(nsm_list)}')
+            nsm_list = []
 
         # update the matrix
         matrix -= mu * optimizer.step(grad)
@@ -155,10 +171,10 @@ if __name__ == '__main__':
         with open(result_path, 'w') as f:
             f.write('Lattice =\n{},\nNSM =\n{}'.format(matrix, nsm))
     
-    draw_theta_image(lattice=matrix, 
-                      u_bidirection_range=args.u_bidirection_range, 
-                      image_x_upper_bound=args.image_x_upper_bound, 
-                      sample_num=args.sample_num, 
-                      mode=args.theta_image_mode)
-    draw_descend_curve(array, n, mode=args.descend_curve_mode)
-    draw_lattice(matrix, n, mode=args.lattice_graph_mode)    
+        draw_theta_image(lattice=matrix, 
+                        u_bidirection_range=args.u_bidirection_range, 
+                        image_x_upper_bound=args.image_x_upper_bound, 
+                        sample_num=args.sample_num, 
+                        mode=args.theta_image_mode)
+        draw_descend_curve(array, n, mode=args.descend_curve_mode)
+        draw_lattice(matrix, n, mode=args.lattice_graph_mode)    
