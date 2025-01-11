@@ -55,7 +55,7 @@ args = parser.parse_args()
 for n in args.n:
     assert n >= 1
 # run the algorithm for at most epoch times, fast = 100w, mid = 1000w, slow = 10000w
-parser.add_argument('--epoch'          , type = int   , default = 1000000 // (args.batch_size * args.num_workers) )
+parser.add_argument('--epoch'          , type = int   , default = 10000000 // (args.batch_size * args.num_workers) )
 args = parser.parse_args()
 # number of samples computing NSM for intermediate debug information, divide by n in main.py
 parser.add_argument('--dbg_sample'     , type = int   , default = 1000000     )

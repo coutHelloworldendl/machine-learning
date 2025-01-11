@@ -75,9 +75,9 @@ def draw_theta_image(lattice, u_bidirection_range, image_x_upper_bound:float, sa
     # initialize the u array
     u_array = [0] * dim
     
-    # normalize the lattice
-    V = np.linalg.det(matrix)
-    matrix = matrix * (V ** (-1.0 / dim))
+    # normalize the lattice in volume
+    volume = np.linalg.det(lattice)
+    lattice = lattice * pow(volume, -1.0 / dim)
     
     # run the dfs, store the result in distance_array
     theta_image_dfs(lattice, 0, dim, distance_array, u_array, u_bidirection_range, image_x_upper_bound)
